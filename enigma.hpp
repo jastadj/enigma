@@ -26,7 +26,12 @@ public:
     ~Enigma();
 
     char enterInput(char tc);
-
     std::string enterString(std::string ts);
+
+    void clearRotors();
+    void reset();
+
+    void show();
+
 };
 #endif // CLASS_ENIGMA

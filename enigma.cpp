@@ -3,26 +3,36 @@
 Enigma::Enigma()
 {
     // init rotors
-    //m_Rotors.push_back(new Rotor("Rotor1", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
+    reset();
 
 
-    //m_Reflector = new Reflector("Reflector", "EJMZALYXVBWFCRQUONTSPIKHGD");
-    //m_Static = new Reflector("Static");
-
-    // init rotos
-    m_Rotors.push_back( new StaticRotor("Static Rotor") );
-    m_Rotors.push_back( new Rotor("Rotor1", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
-    m_Rotors.push_back( new Rotor("Rotor2", "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E') );
-    m_Rotors.push_back( new Rotor("Rotor3", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V') );
-    m_Rotors.push_back( new ReflectorRotor("Reflector", "EJMZALYXVBWFCRQUONTSPIKHGD") );
-
-    m_Rotors[1]->setZeroPositionToChar('P');
 
 }
 
 Enigma::~Enigma()
 {
+    clearRotors();
+}
 
+void Enigma::clearRotors()
+{
+    for(int i = 0; i < int(m_Rotors.size()); i++)
+    {
+        delete m_Rotors[i];
+    }
+
+    m_Rotors.clear();
+}
+
+void Enigma::reset()
+{
+    clearRotors();
+
+    m_Rotors.push_back( new StaticRotor("Static Rotor") );
+    m_Rotors.push_back( new Rotor("Rotor1", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
+    m_Rotors.push_back( new Rotor("Rotor2", "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E') );
+    m_Rotors.push_back( new Rotor("Rotor3", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V') );
+    m_Rotors.push_back( new ReflectorRotor("Reflector", "EJMZALYXVBWFCRQUONTSPIKHGD") );
 }
 
 void Enigma::stepRotors(int rnum)
@@ -164,4 +174,23 @@ std::string Enigma::enterString(std::string ts)
     }
 
     return ostring;
+}
+
+void Enigma::show()
+{
+    std::cout << "Enigma Machine Rotor Count:" << m_Rotors.size() << std::endl;
+
+    for(int i = 0; i < int(m_Rotors.size()); i++)
+    {
+        std::string rtype;
+
+        StaticRotor *scheck = dynamic_cast<StaticRotor*>(m_Rotors[i]);
+        ReflectorRotor *rcheck = dynamic_cast<ReflectorRotor*>(m_Rotors[i]);
+
+        if(scheck != NULL) rtype = "Static Rotor";
+        else if(rcheck != NULL) rtype = "Reflector Rotor";
+        else rtype = "Encoding Rotor";
+
+        std::cout << i << ":" << rtype << " \"" << m_Rotors[i]->getName() << "\"\n";
+    }
 }
