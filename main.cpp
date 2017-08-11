@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     std::cout << "\n\n";
 
-    teststring = "NLKKNCKHLOO";
+    teststring = "VJHETCBWXAQ";
     enigma.reset();
     std::cout << teststring << std::endl;
     std::cout << enigma.enterString(teststring) << std::endl;

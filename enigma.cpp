@@ -111,6 +111,9 @@ char Enigma::enterInput(char tc)
         return '?';
     }
 
+    // step rotors
+    stepRotors();
+
     // run signal up to the reflector
     int sigpos = int(vchar);
     if(DEBUG) std::cout << "Starting signal pos = " << sigpos << std::endl;
@@ -157,9 +160,6 @@ char Enigma::enterInput(char tc)
 
     // return output character
     if(DEBUG) std::cout << "Output : " << m_Rotors[0]->m_Chars[sigpos] << std::endl;
-
-    // step rotors
-    stepRotors();
 
     return m_Rotors[0]->m_Chars[sigpos];
 }
