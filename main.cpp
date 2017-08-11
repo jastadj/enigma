@@ -7,19 +7,13 @@ int main(int argc, char *argv[])
 
     Enigma enigma;
 
-    std::string teststring = "THISISATEST";
+    std::cout << enigma.enterString("THISISATEST") << std::endl;
 
-    std::cout << teststring << std::endl;
-    std::cout << enigma.enterString(teststring) << std::endl;
-
-    std::cout << "\n\n";
-
-    teststring = "VJHETCBWXAQ";
     enigma.reset();
-    std::cout << teststring << std::endl;
-    std::cout << enigma.enterString(teststring) << std::endl;
+    enigma.configurePlugBoard("");
 
-    enigma.show();
+    std::cout << enigma.enterString("THISISATEST") << std::endl;
+
 
     return 0;
 }

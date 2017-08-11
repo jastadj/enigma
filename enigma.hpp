@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "rotor.hpp"
+#include "plugboard.hpp"
 
 #define DEBUG 0
 
@@ -21,6 +22,9 @@ private:
     // all rotors in between are encoding rotors that turnover
     std::vector<Rotor*> m_Rotors;
 
+    // plugboard
+    PlugBoard *m_PlugBoard;
+
     // steps rotors when key is pressed
     void stepRotors(int rnum = 1);
 
@@ -35,10 +39,12 @@ public:
     std::string getValidChars() { return m_Chars;}
     bool isCharValid(char tc);
 
+    bool configurePlugBoard(std::string pb);
+
     char enterInput(char tc);
     std::string enterString(std::string ts);
 
-    void clearRotors();
+    void clear();
     void reset();
 
     void show();

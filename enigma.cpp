@@ -3,21 +3,18 @@
 Enigma::Enigma():
 m_Chars("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 {
-    // init valid chars
+    m_PlugBoard = NULL;
 
     // init rotors
     reset();
-
-
-
 }
 
 Enigma::~Enigma()
 {
-    clearRotors();
+    clear();
 }
 
-void Enigma::clearRotors()
+void Enigma::clear()
 {
     for(int i = 0; i < int(m_Rotors.size()); i++)
     {
@@ -25,17 +22,43 @@ void Enigma::clearRotors()
     }
 
     m_Rotors.clear();
+
+    if(m_PlugBoard != NULL)
+    {
+        delete m_PlugBoard;
+        m_PlugBoard = NULL;
+    }
 }
 
 void Enigma::reset()
 {
-    clearRotors();
+    clear();
 
     m_Rotors.push_back( new StaticRotor("Static Rotor", m_Chars) );
     m_Rotors.push_back( new Rotor("Rotor1", m_Chars, "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
     m_Rotors.push_back( new Rotor("Rotor2", m_Chars, "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E') );
     m_Rotors.push_back( new Rotor("Rotor3", m_Chars, "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V') );
     m_Rotors.push_back( new ReflectorRotor("Reflector", m_Chars, "EJMZALYXVBWFCRQUONTSPIKHGD") );
+
+    m_PlugBoard = new PlugBoard("Plugboard", m_Chars);
+    m_PlugBoard->configure("AF");
+}
+
+bool Enigma::configurePlugBoard(std::string pb)
+{
+    if(!m_PlugBoard)
+    {
+        std::cout << "PlugBoard is NULL!\n";
+        return false;
+    }
+
+    if(!m_PlugBoard->configure(pb))
+    {
+        std::cout << "Unable to configure plugboard!\n";
+        return false;
+    }
+
+    return true;
 }
 
 void Enigma::stepRotors(int rnum)
@@ -118,6 +141,12 @@ char Enigma::enterInput(char tc)
     if(!isCharValid(tc)) return '?';
     size_t vchar = m_Chars.find_first_of(tc);
 
+    // run signal through plugboard
+    if(m_PlugBoard)
+    {
+        vchar = m_Chars.find_first_of(m_PlugBoard->inputChar(tc) );
+    }
+
     // step rotors
     stepRotors();
 
@@ -165,6 +194,12 @@ char Enigma::enterInput(char tc)
         else sigpos = m_Rotors[i]->getOutputPosition(ROTOR_LEFT, sigpos);
     }
 
+    // run back out through plugboard
+    if(m_PlugBoard)
+    {
+        sigpos = int(m_Chars.find_first_of( m_PlugBoard->inputChar(m_Chars[sigpos]) ) );
+    }
+
     // return output character
     if(DEBUG) std::cout << "Output : " << m_Chars[sigpos] << std::endl;
 
@@ -205,5 +240,11 @@ void Enigma::show()
         else rtype = "Encoding Rotor";
 
         std::cout << i << ":" << rtype << " \"" << m_Rotors[i]->getName() << "\"\n";
+    }
+
+    if(m_PlugBoard)
+    {
+        std::cout << "\n";
+        m_PlugBoard->show();
     }
 }
