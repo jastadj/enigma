@@ -24,10 +24,14 @@ public:
 
     static const std::string m_Chars;
 
-    virtual void turn();
+    std::string getName() { return m_Name;}
     int getCharCount() { return int(m_Chars.length());}
-
+    int getPosition() { return m_Position;}
+    char getTurnoverChar() { return m_TurnoverChar;}
     int getOutputPosition(ROTOR_SIDE rside, int tpos);
+
+    virtual bool setZeroPositionToChar(char tc);
+    virtual void turn();
 
     virtual void show();
 };
@@ -40,7 +44,20 @@ public:
     StaticRotor(std::string rname) : Rotor(rname, m_Chars, m_Chars[0]) {};
     ~StaticRotor();
 
+    bool setZeroPositionToChar(char tc) { return false;}
     void turn() {};
 
+};
+
+class ReflectorRotor: public Rotor
+{
+private:
+
+public:
+    ReflectorRotor(std::string rname, std::string wiredchars) : Rotor(rname, wiredchars, m_Chars[0]) {};
+    ~ReflectorRotor();
+
+    bool setZeroPositionToChar(char tc) {return false;}
+    void turn() {};
 };
 #endif // CLASS_ROTOR

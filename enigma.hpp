@@ -7,6 +7,8 @@
 
 #include "rotor.hpp"
 
+#define DEBUG 0
+
 class Enigma
 {
 private:
@@ -16,10 +18,15 @@ private:
     // all rotors in between are encoding rotors that turnover
     std::vector<Rotor*> m_Rotors;
 
+    void stepRotors(int rnum = 1);
+    bool isValid();
+
 public:
     Enigma();
     ~Enigma();
 
     char enterInput(char tc);
+
+    std::string enterString(std::string ts);
 };
 #endif // CLASS_ENIGMA
