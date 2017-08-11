@@ -1,7 +1,10 @@
 #include "enigma.hpp"
 
-Enigma::Enigma()
+Enigma::Enigma():
+m_Chars("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 {
+    // init valid chars
+
     // init rotors
     reset();
 
@@ -28,11 +31,11 @@ void Enigma::reset()
 {
     clearRotors();
 
-    m_Rotors.push_back( new StaticRotor("Static Rotor") );
-    m_Rotors.push_back( new Rotor("Rotor1", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
-    m_Rotors.push_back( new Rotor("Rotor2", "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E') );
-    m_Rotors.push_back( new Rotor("Rotor3", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V') );
-    m_Rotors.push_back( new ReflectorRotor("Reflector", "EJMZALYXVBWFCRQUONTSPIKHGD") );
+    m_Rotors.push_back( new StaticRotor("Static Rotor", m_Chars) );
+    m_Rotors.push_back( new Rotor("Rotor1", m_Chars, "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q') );
+    m_Rotors.push_back( new Rotor("Rotor2", m_Chars, "AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E') );
+    m_Rotors.push_back( new Rotor("Rotor3", m_Chars, "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V') );
+    m_Rotors.push_back( new ReflectorRotor("Reflector", m_Chars, "EJMZALYXVBWFCRQUONTSPIKHGD") );
 }
 
 void Enigma::stepRotors(int rnum)
@@ -56,7 +59,7 @@ void Enigma::stepRotors(int rnum)
 
     // if turnover character is hit, rotate next rotor
     char tc = m_Rotors[rnum]->getTurnoverChar();
-    size_t tcpos = m_Rotors[rnum]->m_Chars.find_first_of(tc);
+    size_t tcpos = m_Chars.find_first_of(tc);
     if(tcpos == std::string::npos)
     {
         std::cout << "Error stepRotors, turnover character not found in m_Chars for " << m_Rotors[rnum]->getName() << std::endl;
@@ -97,19 +100,23 @@ bool Enigma::isValid()
     return true;
 }
 
+bool Enigma::isCharValid(char tc)
+{
+    size_t tpos = m_Chars.find_first_of(tc);
+
+    if(tpos == std::string::npos) return false;
+
+    return true;
+}
+
 char Enigma::enterInput(char tc)
 {
 
     if(!isValid()) return '?';
 
     // check that input character is valid
-    size_t vchar = m_Rotors[0]->m_Chars.find_first_of(tc);
-    if(vchar == std::string::npos)
-    {
-        std::cout << "'" << tc << "' is not a valid character.\n";
-        std::cout << "Must be one of:" << m_Rotors[0]->m_Chars << std::endl;
-        return '?';
-    }
+    if(!isCharValid(tc)) return '?';
+    size_t vchar = m_Chars.find_first_of(tc);
 
     // step rotors
     stepRotors();
@@ -159,9 +166,9 @@ char Enigma::enterInput(char tc)
     }
 
     // return output character
-    if(DEBUG) std::cout << "Output : " << m_Rotors[0]->m_Chars[sigpos] << std::endl;
+    if(DEBUG) std::cout << "Output : " << m_Chars[sigpos] << std::endl;
 
-    return m_Rotors[0]->m_Chars[sigpos];
+    return m_Chars[sigpos];
 }
 
 std::string Enigma::enterString(std::string ts)
@@ -178,6 +185,12 @@ std::string Enigma::enterString(std::string ts)
 
 void Enigma::show()
 {
+    std::cout << "Enigma Machine\n";
+    std::cout << "--------------\n";
+    std::cout << "Valid Chars:\n";
+    std::cout << m_Chars << std::endl;
+
+    std::cout << std::endl;
     std::cout << "Enigma Machine Rotor Count:" << m_Rotors.size() << std::endl;
 
     for(int i = 0; i < int(m_Rotors.size()); i++)

@@ -2,11 +2,10 @@
 
 #include <iostream>
 
-const std::string Rotor::m_Chars = std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-
-Rotor::Rotor(std::string rname, std::string wiredchars, char turnoverc)
+Rotor::Rotor(std::string rname, std::string chars, std::string wiredchars, char turnoverc)
 {
     m_Name = rname;
+    m_Chars = chars;
     m_WiredChars = wiredchars;
     m_TurnoverChar = turnoverc;
     m_Position = 0;

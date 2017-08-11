@@ -11,6 +11,7 @@ class Rotor
 protected:
 
     std::string m_Name;
+    std::string m_Chars;
     std::string m_WiredChars;
     char m_TurnoverChar;
 
@@ -19,10 +20,8 @@ protected:
     bool isValid();
 
 public:
-    Rotor(std::string rname, std::string wiredchars, char turnoverc);
+    Rotor(std::string rname, std::string chars, std::string wiredchars, char turnoverc);
     virtual ~Rotor();
-
-    static const std::string m_Chars;
 
     std::string getName() { return m_Name;}
     int getCharCount() { return int(m_Chars.length());}
@@ -41,7 +40,7 @@ class StaticRotor: public Rotor
 private:
 
 public:
-    StaticRotor(std::string rname) : Rotor(rname, m_Chars, m_Chars[0]) {};
+    StaticRotor(std::string rname, std::string chars) : Rotor(rname, chars, chars, chars[0]) {};
     ~StaticRotor();
 
     bool setZeroPositionToChar(char tc) { return false;}
@@ -54,7 +53,7 @@ class ReflectorRotor: public Rotor
 private:
 
 public:
-    ReflectorRotor(std::string rname, std::string wiredchars) : Rotor(rname, wiredchars, m_Chars[0]) {};
+    ReflectorRotor(std::string rname, std::string chars, std::string wiredchars) : Rotor(rname, chars, wiredchars, chars[0]) {};
     ~ReflectorRotor();
 
     bool setZeroPositionToChar(char tc) {return false;}
