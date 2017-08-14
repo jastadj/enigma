@@ -41,7 +41,27 @@ void Enigma::reset()
     m_Rotors.push_back( new ReflectorRotor("Reflector", m_Chars, "EJMZALYXVBWFCRQUONTSPIKHGD") );
 
     m_PlugBoard = new PlugBoard("Plugboard", m_Chars);
-    m_PlugBoard->configure("AF");
+    m_PlugBoard->configure("");
+}
+
+std::vector<int> Enigma::getRotorPositions()
+{
+    std::vector<int> pos;
+
+    for(int i = 0; i < int(m_Rotors.size()); i++)
+    {
+        StaticRotor *scheck = dynamic_cast<StaticRotor*>(m_Rotors[i]);
+        ReflectorRotor *rcheck = dynamic_cast<ReflectorRotor*>(m_Rotors[i]);
+
+        // if rotor is NOT static or reflector, add position to list
+        if(scheck == NULL && rcheck == NULL)
+        {
+             pos.push_back(m_Rotors[i]->getPosition());
+        }
+    }
+
+    return pos;
+
 }
 
 bool Enigma::configurePlugBoard(std::string pb)
@@ -241,6 +261,11 @@ void Enigma::show()
 
         std::cout << i << ":" << rtype << " \"" << m_Rotors[i]->getName() << "\"\n";
     }
+
+    std::vector<int> rpos = getRotorPositions();
+    std::cout << "Rotor Positions:\n";
+    for(int i = 0; i < int(rpos.size()); i++) std::cout << rpos[i] << "(" << m_Chars[rpos[i]] << ") ";
+    std::cout << std::endl;
 
     if(m_PlugBoard)
     {

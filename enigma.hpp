@@ -39,6 +39,8 @@ public:
     std::string getValidChars() { return m_Chars;}
     bool isCharValid(char tc);
 
+    std::vector<int> getRotorPositions();
+
     bool configurePlugBoard(std::string pb);
 
     char enterInput(char tc);
