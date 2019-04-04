@@ -5,7 +5,7 @@ SRC_PATH=src
 BUILD_PATH=build
 BIN_PATH=$(BUILD_PATH)/bin
 BIN_NAME=enigma
-
+MAKE=make -f Makefile.nix
 
 # source
 SRC = $(shell find $(SRC_PATH) -name '*.cpp')
@@ -15,6 +15,7 @@ OBJ = $(SRC:$(SRC_PATH)/%.cpp=$(BUILD_PATH)/%.o)
 
 .PHONY: default_target
 default_target: dirs
+	echo $(MAKE)
 	@$(MAKE) all
 
 .PHONY: dirs
