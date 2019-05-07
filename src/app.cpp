@@ -16,7 +16,7 @@ App::App()
 
 App::~App()
 {
-
+    endwin();
 }
 
 
