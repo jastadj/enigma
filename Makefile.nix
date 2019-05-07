@@ -1,10 +1,15 @@
 CC=g++
-CCFLAGS=-g -Wall
-INCLUDE=-I include
+CCFLAGS=-g -Wall -static-libgcc
+INCLUDE=-Iinclude -I$(PDCURSES_PATH)
 SRC_PATH=src
 BUILD_PATH=build
 BIN_PATH=$(BUILD_PATH)/bin
 BIN_NAME=enigma
+ifeq ($(STATIC),1)
+	LIB=-Wl,-Bdynamic,-lstdc++,-lc,-lX11,-lXaw,-lxcb,-lXau,-lXt,-lXdmcp,-lXpm,-lXmu,-lXext,-static,-lXCurses
+else
+	LIB=-Wl,-Bdynamic,$(PDCURSES_PATH)/x11/libXCurses.so
+endif
 MAKE=make -f Makefile.nix
 
 # source
@@ -31,7 +36,7 @@ clean:
 all: $(BIN_PATH)/$(BIN_NAME)
 
 $(BIN_PATH)/$(BIN_NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $@ -lcurses
+	$(CC) $(CCFLAGS) $(OBJ) -o $@ $(LIB)
 
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.cpp
-	$(CC) $(CFLAGS) $(INCLUDE) -c $^ -o $@
+	$(CC) $(CCFLAGS) $(INCLUDE) -c $^ -o $@
